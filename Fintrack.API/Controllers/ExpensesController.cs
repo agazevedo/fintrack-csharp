@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using Fintrack.API.Data;
 using Fintrack.API.Models;
+using Fintrack.API.DTOs.Expenses;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -31,21 +32,25 @@ public class ExpensesController : ControllerBase {
 	}
 
 	[HttpPost]
-	public async Task<IActionResult> Create(Expense expense) {
+	public async Task<IActionResult> Create(CreateExpenseDto dto) {
 		var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
 
 		var budgetItem = await _context.BudgetItems
 			.FirstOrDefaultAsync(b =>
-				b.Id == expense.BudgetItemId &&
+				b.Id == dto.BudgetItemId &&
 				b.UserId == userId
 			);
 
 		if (budgetItem == null) {
-			return BadRequest(new
-			{
-				message = "Invalid budget item"
-			});
+			return BadRequest(new {message = "Invalid budget item"});
 		}
+
+		var expense = new Expense {
+			BudgetItemId = dto.BudgetItemId,
+			UnitValue = dto.UnitValue,
+			Quantity = dto.Quantity,
+			Date = dto.Date
+		};
 
 		_context.Expenses.Add(expense);
 
@@ -55,7 +60,7 @@ public class ExpensesController : ControllerBase {
 	}
 
 	[HttpPut("{id}")]
-	public async Task<IActionResult> Update(int id, Expense updatedExpense) {
+	public async Task<IActionResult> Update(int id, CreateExpenseDto dto) {
 		var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
 
 		var expense = await _context.Expenses
@@ -69,9 +74,10 @@ public class ExpensesController : ControllerBase {
 			return NotFound();
 		}
 
-		expense.UnitValue = updatedExpense.UnitValue;
-		expense.Quantity = updatedExpense.Quantity;
-		expense.Date = updatedExpense.Date;
+		expense.UnitValue = dto.UnitValue;
+		expense.Quantity = dto.Quantity;
+		expense.Date = dto.Date;
+		expense.BudgetItemId = dto.BudgetItemId;
 
 		await _context.SaveChangesAsync();
 

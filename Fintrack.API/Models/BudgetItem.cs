@@ -1,3 +1,5 @@
+using System.Text.Json.Serialization;
+
 namespace Fintrack.API.Models;
 
 public class BudgetItem {
@@ -21,7 +23,8 @@ public class BudgetItem {
 
 	public Category Category { get; set; } = null!;
 
-	public ICollection<Expense> Expenses { get; set; } = [];
+	[JsonIgnore]
+	public ICollection<Expense> Expenses { get; set; } = new List<Expense>();
 
 	public decimal BudgetTotal => UnitValue * Quantity;
 

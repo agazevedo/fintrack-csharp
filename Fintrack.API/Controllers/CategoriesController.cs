@@ -1,6 +1,7 @@
 using System.Security.Claims;
 using Fintrack.API.Data;
 using Fintrack.API.Models;
+using Fintrack.API.DTOs.Categories;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -27,19 +28,23 @@ public class CategoriesController : ControllerBase {
 	}
 
 	[HttpPost]
-	public async Task<IActionResult> Create(Category category) {
+	public async Task<IActionResult> Create(CreateCategoryDto dto) {
 		var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
 
 		var exists = await _context.Categories.AnyAsync(c =>
 			c.UserId == userId &&
-			c.Name.ToLower() == category.Name.ToLower()
+			c.Name.ToLower() == dto.Name.ToLower()
 		);
 
 		if (exists) {
 			return BadRequest(new {message = "Category already exists"});
 		}
 
-		category.UserId = userId;
+		var category = new Category {
+			Name = dto.Name,
+			Type = dto.Type,
+			UserId = userId
+		};
 
 		_context.Categories.Add(category);
 
