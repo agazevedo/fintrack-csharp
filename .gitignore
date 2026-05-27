@@ -1,0 +1,57 @@
+# Build
+bin/
+obj/
+
+# User-specific files
+*.user
+*.rsuser
+*.suo
+
+# Rider
+.idea/
+
+# VS Code
+.vscode/
+
+# Visual Studio
+.vs/
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Environment
+.env
+
+# App settings local
+appsettings.Development.json
+
+# Entity Framework local db
+*.db
+*.db-shm
+*.db-wal
+
+# NuGet
+packages/
+*.nupkg
+
+# Publish
+publish/
+
+# Node (quando criar React)
+node_modules/
+dist/
+build/
+
+# Coverage
+coverage/
+
+# Temp
+tmp/
+temp/
+
+# Migrations
+Migrations/
