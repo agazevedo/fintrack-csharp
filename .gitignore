@@ -1,6 +1,6 @@
 # Build
-bin/
-obj/
+**/bin/
+**/obj/
 
 # User-specific files
 *.user
@@ -35,19 +35,11 @@ appsettings.Development.json
 *.db-wal
 
 # NuGet
-packages/
+**/packages/
 *.nupkg
 
 # Publish
-publish/
-
-# Node (quando criar React)
-node_modules/
-dist/
-build/
-
-# Coverage
-coverage/
+**/publish/
 
 # Temp
 tmp/
