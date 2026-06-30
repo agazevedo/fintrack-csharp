@@ -54,7 +54,7 @@ public class CategoriesController : ControllerBase {
 	}
 
 	[HttpPut("{id}")]
-	public async Task<IActionResult> Update(int id, Category updatedCategory) {
+	public async Task<IActionResult> Update(int id, UpdateCategoryDto dto) {
 		var userId = int.Parse(User.FindFirst(ClaimTypes.NameIdentifier)!.Value);
 
 		var category = await _context.Categories
@@ -63,12 +63,11 @@ public class CategoriesController : ControllerBase {
 				c.UserId == userId
 			);
 
-		if (category == null) {
+		if (category == null)
 			return NotFound();
-		}
 
-		category.Name = updatedCategory.Name;
-		category.Type = updatedCategory.Type;
+		category.Name = dto.Name;
+		category.Type = dto.Type;
 
 		await _context.SaveChangesAsync();
 
