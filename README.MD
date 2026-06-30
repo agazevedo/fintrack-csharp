@@ -2,7 +2,7 @@
 
 Sistema em C# para a disciplina projeto integrador III-B.
 
-## Tecnologias
+### Tecnologias
 
 - ASP.NET Core
 - Entity Framework Core
@@ -10,9 +10,9 @@ Sistema em C# para a disciplina projeto integrador III-B.
 - JWT Authentication
 - React
 
----
+## API
 
-## Configuração
+### Configuração
 
 Editar o arquivo:
 
@@ -32,9 +32,7 @@ Editar o arquivo:
 }
 ```
 
----
-
-## Instalação
+### Instalação
 
 Restaurar dependências:
 
@@ -50,7 +48,7 @@ dotnet ef database update
 
 ---
 
-## Executar projeto
+### Executar projeto
 
 ```bash
 dotnet run
@@ -66,4 +64,18 @@ Swagger:
 
 ```txt
 http://localhost:5018/swagger
+```
+
+## Frontend
+
+### Executar
+
+```bash
+npm start
+```
+
+Front disponível em:
+
+```txt
+http://localhost:3000
 ```
