@@ -17,8 +17,8 @@ export async function createBudgetItem(data) {
 	});
 
 	if (!res.ok) {
-		const text = await res.text();
-		throw new Error(text || "Erro ao criar item");
+		const error = await res.json();
+		throw new Error(error.message);
 	}
 
 	return await res.json();

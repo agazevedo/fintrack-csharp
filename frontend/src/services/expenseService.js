@@ -17,8 +17,8 @@ export async function createExpense(data) {
 	});
 
 	if (!res.ok) {
-		const text = await res.text();
-		throw new Error(text || "Erro ao criar despesa");
+		const error = await res.json();
+		throw new Error(error.message);
 	}
 
 	return await res.json();

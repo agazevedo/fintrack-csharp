@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import Navbar from "../components/Navbar";
+import Toast from "../components/Toast";
 
 import {
 	getCategories,
@@ -23,6 +24,11 @@ import {
 } from "../services/expenseService";
 
 export default function Management() {
+	const [toast, setToast] = useState({
+		show: false,
+		message: "",
+		error: false
+	});
 	const [tab, setTab] = useState("category");
 
 	const [categories, setCategories] = useState([]);
@@ -51,6 +57,14 @@ export default function Management() {
 		setEditingId(null);
 	}
 
+	function showToast(message, error = false) {
+		setToast({
+			show: true,
+			message,
+			error
+		});
+	}
+
 	// CATEGORY
 	async function handleSaveCategory() {
 		try {
@@ -66,16 +80,23 @@ export default function Management() {
 			}
 
 			reset();
-			loadAll();
+			await loadAll();
+
+			showToast(editingId !== null ? "Categoria atualizada com sucesso!" : "Categoria criada com sucesso!");
 		} catch (err) {
-			console.error(err);
-			alert(err.message || "Erro ao salvar categoria");
+			// console.error(err);
+			showToast(err.message || "Erro ao salvar categoria", true);
 		}
 	}
 
 	async function handleDeleteCategory(id) {
-		await deleteCategory(id);
-		loadAll();
+		try {
+			await deleteCategory(id);
+			await loadAll();
+			showToast("Categoria removida com sucesso!");
+		} catch (err) {
+			showToast(err.message, true);
+		}
 	}
 
 	// ITEM
@@ -87,19 +108,26 @@ export default function Management() {
 			categoryId: Number(form.categoryId)
 		};
 
-		if (editingId !== null && tab === "item") {
-			await updateBudgetItem(editingId, data);
-		} else {
-			await createBudgetItem(data);
-		}
+		try {
+			if (editingId !== null && tab === "item") {
+				await updateBudgetItem(editingId, data);
+			} else {
+				await createBudgetItem(data);
+			}
 
-		reset();
-		loadAll();
+			reset();
+			await loadAll();
+
+			showToast(editingId !== null ? "Item atualizado com sucesso!" : "Item criado com sucesso!");
+		} catch (err) {
+			// console.error(err);
+			showToast(err.message || "Erro ao salvar item", true);
+		}
 	}
 
 	async function handleDeleteItem(id) {
 		await deleteBudgetItem(id);
-		loadAll();
+		await loadAll();
 	}
 
 	// EXPENSE
@@ -111,19 +139,25 @@ export default function Management() {
 			date: form.date
 		};
 
-		if (editingId !== null && tab === "expense") {
-			await updateExpense(editingId, data);
-		} else {
-			await createExpense(data);
-		}
+		try {
+			if (editingId !== null && tab === "expense") {
+				await updateExpense(editingId, data);
+			} else {
+				await createExpense(data);
+			}
 
-		reset();
-		loadAll();
+			reset();
+			await loadAll();
+
+			showToast(editingId !== null ? "Despesa atualizada com sucesso!" : "Despesa criada com sucesso!");
+		} catch (err) {
+			showToast(err.message, true);
+		}
 	}
 
 	async function handleDeleteExpense(id) {
 		await deleteExpense(id);
-		loadAll();
+		await loadAll();
 	}
 
 	return (
@@ -299,6 +333,17 @@ export default function Management() {
 					</div>
 				)}
 			</div>
+			<Toast
+				show={toast.show}
+				message={toast.message}
+				error={toast.error}
+				onClose={() =>
+					setToast(t => ({
+						...t,
+						show: false
+					}))
+				}
+			/>
 		</div>
 	);
 }
