@@ -304,10 +304,10 @@ tbody tr:hover {
 	color: white;
 }
 
-.tab-content {
+/* .tab-content {
 	display: none;
 	padding-top: 10px;
-}
+} */
 
 .tab-content.active {
 	display: block;

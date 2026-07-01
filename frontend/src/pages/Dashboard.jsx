@@ -3,8 +3,18 @@ import { getBudgetItems } from "../services/budgetItemService";
 import { getExpenses } from "../services/expenseService";
 import Chart from "chart.js/auto";
 import Navbar from "../components/Navbar";
+import Modal from "../components/Modal";
 
 export default function Dashboard() {
+	const [expenses, setExpenses] = useState([]);
+	const [modalOpen, setModalOpen] = useState(false);
+	const [selectedCategory, setSelectedCategory] = useState("");
+	const [modalData, setModalData] = useState({
+		summary: {},
+		expenses: [],
+		items: []
+	});
+
 	const financeRef = useRef(null);
 	const categoryRef = useRef(null);
 
@@ -21,7 +31,10 @@ export default function Dashboard() {
 		async function loadDashboard() {
 			try {
 				const items = await getBudgetItems();
-				const expenses = await getExpenses();
+				const expenseList = await getExpenses();
+
+				console.log(expenseList);
+				setExpenses(expenseList);
 
 				let totalPlanned = 0;
 				let totalSpent = 0;
@@ -32,7 +45,7 @@ export default function Dashboard() {
 					totalPlanned += Number(item.budgetTotal ?? 0);
 				});
 
-				expenses.forEach(exp => {
+				expenseList.forEach(exp => {
 					totalSpent += Number(exp.total ?? 0);
 
 					const cat = exp.budgetItem?.category?.name;
@@ -47,7 +60,7 @@ export default function Dashboard() {
 				});
 
 				renderFinanceChart(totalSpent, totalPlanned - totalSpent);
-				renderCategoryChart(categoryMap);
+				renderCategoryChart(categoryMap, expenseList);
 
 			} catch (err) {
 				console.error(err);
@@ -93,7 +106,7 @@ export default function Dashboard() {
 		});
 	}
 
-	function renderCategoryChart(map) {
+	function renderCategoryChart(map, expenseList) {
 		if (!categoryRef.current) return;
 
 		if (categoryChartRef.current) {
@@ -119,9 +132,56 @@ export default function Dashboard() {
 				]
 			},
 			options: {
-				responsive: true
+				responsive: true,
+				onClick: (evt, elements) => {
+					if (!elements.length) return;
+
+					const index = elements[0].index;
+
+					openCategoryModal(labels[index], expenseList);
+				}
 			}
 		});
+	}
+
+	function openCategoryModal(categoryName, expenseList) {
+		const filtered = expenseList.filter(
+			e => e.budgetItem?.category?.name === categoryName
+		);
+
+		let total = 0;
+
+		filtered.forEach(e => {
+			total += Number(e.total);
+		});
+
+		const itemMap = {};
+
+		filtered.forEach(e => {
+			const description = e.budgetItem?.description;
+
+			if (!itemMap[description]) itemMap[description] = 0;
+
+			itemMap[description] += Number(e.total);
+		});
+
+		const items = Object.entries(itemMap).map(([description, total]) => ({
+			description,
+			total
+		}));
+
+		setSelectedCategory(categoryName);
+
+		setModalData({
+			summary: {
+				total,
+				count: filtered.length
+			},
+			expenses: filtered,
+			items
+		});
+
+		setModalOpen(true);
 	}
 
 	return (
@@ -162,6 +222,15 @@ export default function Dashboard() {
 					</div>
 				</div>
 			</div>
+
+			<Modal
+				isOpen={modalOpen}
+				onClose={() => setModalOpen(false)}
+				title={selectedCategory}
+				summary={modalData.summary}
+				expenses={modalData.expenses}
+				items={modalData.items}
+			/>
 		</div>
 	);
 }
