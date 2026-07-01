@@ -29,10 +29,7 @@ export default function Dashboard() {
 				const categoryMap = {};
 
 				items.forEach(item => {
-					const unit = Number(item.unitValue ?? 0);
-					const qty = Number(item.quantity ?? 0);
-
-					totalPlanned += unit * qty;
+					totalPlanned += Number(item.budgetTotal ?? 0);
 				});
 
 				expenses.forEach(exp => {

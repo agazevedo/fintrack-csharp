@@ -18,7 +18,7 @@ export default function Navbar() {
 			<ul className="nav-right">
 				<li><Link to="/management">Gerenciamento</Link></li>
 				<li><Link to="/">Dashboard</Link></li>
-				<li><button onClick={handleLogout}>Logout</button></li>
+				<li><Link to="#" onClick={handleLogout}>Logout</Link></li>
 			</ul>
 		</header>
 	);
