@@ -29,7 +29,9 @@ export default function Management() {
 	const [items, setItems] = useState([]);
 	const [expenses, setExpenses] = useState([]);
 
-	const [form, setForm] = useState({});
+	const [form, setForm] = useState({
+		type: "custeio"
+	});
 	const [editingId, setEditingId] = useState(null);
 
 	useEffect(() => {
@@ -43,7 +45,9 @@ export default function Management() {
 	}
 
 	function reset() {
-		setForm({});
+		setForm({
+			type: "custeio"
+		});
 		setEditingId(null);
 	}
 
@@ -147,7 +151,7 @@ export default function Management() {
 							/>
 
 							<select
-								value={form.type || ""}
+								value={form.type ?? "custeio"}
 								onChange={e => setForm({ ...form, type: e.target.value })}
 							>
 								<option value="custeio">Custeio</option>
