@@ -55,7 +55,7 @@ export default function Management() {
 				type: form.type
 			};
 
-			if (editingId && tab === "category") {
+			if (editingId !== null && tab === "category") {
 				await updateCategory(editingId, data);
 			} else {
 				await createCategory(data);
@@ -78,12 +78,12 @@ export default function Management() {
 	async function handleSaveItem() {
 		const data = {
 			description: form.description,
-			unitValue: Number(form.unit_value),
+			unitValue: Number(form.unitValue),
 			quantity: Number(form.quantity),
 			categoryId: Number(form.categoryId)
 		};
 
-		if (editingId && tab === "item") {
+		if (editingId !== null && tab === "item") {
 			await updateBudgetItem(editingId, data);
 		} else {
 			await createBudgetItem(data);
@@ -101,13 +101,13 @@ export default function Management() {
 	// EXPENSE
 	async function handleSaveExpense() {
 		const data = {
-			budgetItemId: Number(form.budget_item),
-			unitValue: Number(form.unit_value),
+			budgetItemId: Number(form.budgetItemId),
+			unitValue: Number(form.unitValue),
 			quantity: Number(form.quantity),
 			date: form.date
 		};
 
-		if (editingId && tab === "expense") {
+		if (editingId !== null && tab === "expense") {
 			await updateExpense(editingId, data);
 		} else {
 			await createExpense(data);
@@ -128,7 +128,7 @@ export default function Management() {
 
 			<div className="manager-box">
 				{/* TABS */}
-				<select id="action-select" value={tab} onChange={e => setTab(e.target.value)}>
+				<select id="action-select" value={tab} onChange={e => {setTab(e.target.value); reset();}}>
 					<option value="category">Categoria</option>
 					<option value="item">Item</option>
 					<option value="expense">Despesa</option>
@@ -156,9 +156,7 @@ export default function Management() {
 						</div>
 
 						<div className="form-actions">
-							<button onClick={handleSaveCategory}>
-								{editingId ? "Atualizar" : "Salvar"}
-							</button>
+							<button onClick={handleSaveCategory}>{editingId ? "Atualizar" : "Salvar"}</button>
 						</div>
 
 						<div id="list-container">
@@ -166,12 +164,8 @@ export default function Management() {
 								<div key={c.id} className="list-item">
 									<span>{c.name} ({c.type})</span>
 									<div>
-										<button onClick={() => { setForm(c); setEditingId(c.id); }}>
-											✏️
-										</button>
-										<button onClick={() => handleDeleteCategory(c.id)}>
-											🗑️
-										</button>
+										<button onClick={() => { setForm(c); setEditingId(c.id); }}>✏️</button>
+										<button onClick={() => handleDeleteCategory(c.id)}>🗑️</button>
 									</div>
 								</div>
 							))}
@@ -194,8 +188,8 @@ export default function Management() {
 							<input
 								type="number"
 								placeholder="Valor unitário"
-								value={form.unit_value || ""}
-								onChange={e => setForm({ ...form, unit_value: e.target.value })}
+								value={form.unitValue || ""}
+								onChange={e => setForm({ ...form, unitValue: e.target.value })}
 							/>
 
 							<input
@@ -219,9 +213,7 @@ export default function Management() {
 						</div>
 
 						<div className="form-actions">
-							<button onClick={handleSaveItem}>
-								{editingId ? "Atualizar" : "Salvar"}
-							</button>
+							<button onClick={handleSaveItem}>{editingId ? "Atualizar" : "Salvar"}</button>
 						</div>
 
 						<div id="list-container">
@@ -233,12 +225,8 @@ export default function Management() {
 										Previsto: R$ {i.unitValue} x {i.quantity} = R$ {i.budgetTotal}
 									</span>
 									<div>
-										<button onClick={() => { setForm(i); setEditingId(i.id); }}>
-											✏️
-										</button>
-										<button onClick={() => handleDeleteItem(i.id)}>
-											🗑️
-										</button>
+										<button onClick={() => { setForm(i); setEditingId(i.id); }}>✏️</button>
+										<button onClick={() => handleDeleteItem(i.id)}>🗑️</button>
 									</div>
 								</div>
 							))}
@@ -253,8 +241,8 @@ export default function Management() {
 
 						<div className="form-group">
 							<select
-								value={form.budget_item || ""}
-								onChange={e => setForm({ ...form, budget_item: e.target.value })}
+								value={form.budgetItemId || ""}
+								onChange={e => setForm({ ...form, budgetItemId: e.target.value })}
 							>
 								<option value="">Item</option>
 								{items.map(i => (
@@ -267,8 +255,8 @@ export default function Management() {
 							<input
 								type="number"
 								placeholder="Valor"
-								value={form.unit_value || ""}
-								onChange={e => setForm({ ...form, unit_value: e.target.value })}
+								value={form.unitValue || ""}
+								onChange={e => setForm({ ...form, unitValue: e.target.value })}
 							/>
 
 							<input
@@ -286,9 +274,7 @@ export default function Management() {
 						</div>
 
 						<div className="form-actions">
-							<button onClick={handleSaveExpense}>
-								{editingId ? "Atualizar" : "Salvar"}
-							</button>
+							<button onClick={handleSaveExpense}>{editingId ? "Atualizar" : "Salvar"}</button>
 						</div>
 
 						<div id="list-container">
@@ -300,12 +286,8 @@ export default function Management() {
 										R$ {e.unitValue} x {e.quantity} = <strong>R$ {Number(e.total).toFixed(2)}</strong>
 									</span>
 									<div>
-										<button onClick={() => { setForm(e); setEditingId(e.id); }}>
-											✏️
-										</button>
-										<button onClick={() => handleDeleteExpense(e.id)}>
-											🗑️
-										</button>
+										<button onClick={() => { setForm(e); setEditingId(e.id); }}>✏️</button>
+										<button onClick={() => handleDeleteExpense(e.id)}>🗑️</button>
 									</div>
 								</div>
 							))}
