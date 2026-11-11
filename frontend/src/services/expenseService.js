@@ -1,4 +1,5 @@
 import { fetchWithAuth } from "../api/api";
+import { apiErrorMessage, apiErrorMessageFromText } from "../api/errors";
 
 export async function getExpenses() {
 	const res = await fetchWithAuth("/expenses");
@@ -17,8 +18,8 @@ export async function createExpense(data) {
 	});
 
 	if (!res.ok) {
-		const error = await res.json();
-		throw new Error(error.message);
+		const error = await res.json().catch(() => null);
+		throw new Error(apiErrorMessage(error, "Erro ao salvar despesa"));
 	}
 
 	return await res.json();
@@ -32,7 +33,7 @@ export async function updateExpense(id, data) {
 
 	if (!res.ok) {
 		const text = await res.text();
-		throw new Error(text || "Erro ao atualizar despesa");
+		throw new Error(apiErrorMessageFromText(text, "Erro ao atualizar despesa"));
 	}
 
 	return await res.json();

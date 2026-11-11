@@ -37,7 +37,7 @@ public class CategoriesController : ControllerBase {
 		);
 
 		if (exists) {
-			return BadRequest(new {message = "Category already exists"});
+			return BadRequest(new {message = "Categoria já existe"});
 		}
 
 		var category = new Category {
