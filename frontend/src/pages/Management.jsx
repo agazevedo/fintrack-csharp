@@ -151,7 +151,7 @@ export default function Management() {
 
 			showToast(editingId !== null ? "Despesa atualizada com sucesso!" : "Despesa criada com sucesso!");
 		} catch (err) {
-			showToast(err.message, true);
+			showToast(err.message || "Erro ao salvar despesa", true);
 		}
 	}
 

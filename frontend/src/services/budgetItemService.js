@@ -1,4 +1,5 @@
 import { fetchWithAuth } from "../api/api";
+import { apiErrorMessage, apiErrorMessageFromText } from "../api/errors";
 
 export async function getBudgetItems() {
 	const res = await fetchWithAuth("/budget-items");
@@ -17,8 +18,8 @@ export async function createBudgetItem(data) {
 	});
 
 	if (!res.ok) {
-		const error = await res.json();
-		throw new Error(error.message);
+		const error = await res.json().catch(() => null);
+		throw new Error(apiErrorMessage(error, "Erro ao salvar item"));
 	}
 
 	return await res.json();
@@ -32,7 +33,7 @@ export async function updateBudgetItem(id, data) {
 
 	if (!res.ok) {
 		const text = await res.text();
-		throw new Error(text || "Erro ao atualizar item");
+		throw new Error(apiErrorMessageFromText(text, "Erro ao atualizar item"));
 	}
 
 	return await res.json();

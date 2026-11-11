@@ -49,7 +49,7 @@ public class ExpensesController : ControllerBase {
 			BudgetItemId = dto.BudgetItemId,
 			UnitValue = dto.UnitValue,
 			Quantity = dto.Quantity,
-			Date = dto.Date
+			Date = dto.Date!.Value
 		};
 
 		_context.Expenses.Add(expense);
@@ -76,7 +76,7 @@ public class ExpensesController : ControllerBase {
 
 		expense.UnitValue = dto.UnitValue;
 		expense.Quantity = dto.Quantity;
-		expense.Date = dto.Date;
+		expense.Date = dto.Date!.Value;
 		expense.BudgetItemId = dto.BudgetItemId;
 
 		await _context.SaveChangesAsync();
